@@ -1,0 +1,23 @@
+{
+  "name": "quiz-code",
+  "version": "0.0.1",
+  "description": "Compiler and Tests Runner for QuizMe Javascript Code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magentaqin/quiz-code-js.git"
+  },
+  "author": "qinmu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/magentaqin/quiz-code-js/issues"
+  },
+  "homepage": "https://github.com/magentaqin/quiz-code-js#readme",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.8.14",
+    "@grpc/proto-loader": "^0.7.7"
+  }
+}
