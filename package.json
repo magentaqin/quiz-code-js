@@ -18,6 +18,8 @@
   "homepage": "https://github.com/magentaqin/quiz-code-js#readme",
   "dependencies": {
     "@grpc/grpc-js": "^1.8.14",
-    "@grpc/proto-loader": "^0.7.7"
+    "@grpc/proto-loader": "^0.7.7",
+    "elogger": "^1.0.9",
+    "minimist": "^1.2.8"
   }
 }
