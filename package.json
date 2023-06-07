@@ -4,7 +4,7 @@
   "description": "Compiler and Tests Runner for QuizMe Javascript Code",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
     "@grpc/grpc-js": "^1.8.14",
     "@grpc/proto-loader": "^0.7.7",
     "elogger": "^1.0.9",
+    "jest": "^29.5.0",
     "minimist": "^1.2.8"
   }
 }
