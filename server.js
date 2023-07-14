@@ -2,11 +2,10 @@ const grpc = require('@grpc/grpc-js')
 const protoLoader = require('@grpc/proto-loader')
 const path = require('path')
 const logger = require("elogger");
-const fs = require("fs")
+const Sandbox = require('./sandbox');
 const exec = require('child_process').exec
 
 const protoPath = path.resolve(process.cwd(), './algorithm.proto')
-const tempPath = path.resolve(process.cwd(), './leetcode.js')
 const packageDefinition = protoLoader.loadSync(
     protoPath,
     {
@@ -20,21 +19,27 @@ const packageDefinition = protoLoader.loadSync(
 
 const algorithmProto = grpc.loadPackageDefinition(packageDefinition).algorithm;
 
+
 function Compile(call, callback) {
     let lang = ''
     logger.debug(`gRPC ${call.call.handler.path}`);
+    const key = Date.now() + '-qm'
+    const testSuiteName = 'buy-and-sell-stock'
+    const sandbox = new Sandbox(key, testSuiteName)
+    sandbox.create()
     call.on('data', async (payload) => {
         if (payload.lang) {
             lang = payload.lang;
         } else if (payload.file) {
-            fs.writeFileSync(tempPath, payload.file);
-            logger.debug(`Writing file chunk: ${tempPath}`);
+            sandbox.write(payload.file)
         }
     })
     call.on('end', async () => {
-        exec(`node ${tempPath}`, (error, stdout, stderr) => {
+        exec(`npm run test`, (error, stdout, stderr) => {
+            console.log('error', error)
+            console.log('stderr', stderr)
             const compileError = error || stderr
-            if (compileError) {
+            if (error) {
                 callback(compileError, {
                     message: 'Something with compiling'
                 })
@@ -44,7 +49,6 @@ function Compile(call, callback) {
                 });
             }
         })
-
     });
 }
 
@@ -53,6 +57,7 @@ function main() {
     const server = new grpc.Server()
     server.addService(algorithmProto.Algorithm.service, { Compile })
     server.bindAsync('0.0.0.0:50051', grpc.ServerCredentials.createInsecure(), () => {
+        logger.debug('grpc server started succesfully!');
         server.start()
     })
 }
