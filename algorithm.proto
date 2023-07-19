@@ -13,4 +13,6 @@ message CompileRequest {
 
 message CompileReply {
   string message = 1;
+  string actualOutput = 2;
+  string expectedOutput = 3;
 }
