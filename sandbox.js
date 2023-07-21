@@ -6,6 +6,7 @@ class Sandbox {
         this.key = key
         this.testSuiteName = testSuiteName
         this.nameSpace = ''
+        this.params = []
     }
 
     create() {
@@ -22,13 +23,33 @@ class Sandbox {
         fs.writeFileSync(path.resolve(this.nameSpace, 'index.js'), file)
     }
 
+    writeCompileParams(params) {
+        try {
+          this.params  = JSON.parse(params)
+        } catch (err) {
+          this.params = []
+        }
+    }
+
 
     compile() {
+        const executeFile = path.resolve(this.nameSpace, 'index.js')
+        try {
+            const func = require(executeFile)
+            return func(...this.params)
+        } catch (err) {
+            return err
+        }
+    }
+
+    test() {
 
     }
 
-    runTests() {
-
+    destroy() {
+      if (fs.existsSync(this.nameSpace)) {
+        fs.rmSync(this.nameSpace, { recursive: true })
+      }
     }
 }
 
