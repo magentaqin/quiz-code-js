@@ -9,6 +9,7 @@ service Algorithm {
 message CompileRequest {
   string lang = 1;
   bytes file = 2;
+  string params = 3;
 }
 
 message CompileReply {

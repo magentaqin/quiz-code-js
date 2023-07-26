@@ -28,27 +28,45 @@ function Compile(call, callback) {
     const sandbox = new Sandbox(key, testSuiteName)
     sandbox.create()
     call.on('data', async (payload) => {
+        console.log('payload', payload)
+        if (payload.params) {
+            sandbox.writeCompileParams(payload.params)
+        }
         if (payload.lang) {
             lang = payload.lang;
-        } else if (payload.file) {
+        } 
+        if (payload.file) {
             sandbox.write(payload.file)
         }
     })
     call.on('end', async () => {
-        exec(`npm run test`, (error, stdout, stderr) => {
-            console.log('error', error)
-            console.log('stderr', stderr)
-            const compileError = error || stderr
-            if (error) {
-                callback(compileError, {
-                    message: 'Something with compiling'
-                })
-            } else {
-                callback(null, {
-                    message: 'Compile Successfully!'
-                });
-            }
-        })
+        const compileRes = sandbox.compile()
+        if (compileRes instanceof Error) {
+            callback(compileRes, {
+              message: 'Something with compiling'
+            })
+        } else {
+            callback(null, {
+                actualOutput: compileRes,
+                expectedOutput: 0,
+                message: 'Compile Successfully!'
+            });
+        }
+        sandbox.destroy()
+        // exec(`npm run test`, (error, stdout, stderr) => {
+        //     console.log('error', error)
+        //     console.log('stderr', stderr)
+        //     const compileError = error || stderr
+        //     if (error) {
+        //         callback(compileError, {
+        //             message: 'Something with compiling'
+        //         })
+        //     } else {
+        //         callback(null, {
+        //             message: 'Compile Successfully!'
+        //         });
+        //     }
+        // })
     });
 }
 
