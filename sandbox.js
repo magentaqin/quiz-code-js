@@ -42,6 +42,16 @@ class Sandbox {
         }
     }
 
+    compileExpected() {
+      const executeFile = path.resolve(process.cwd(), 'test-suites', this.testSuiteName, 'index.js')
+      try {
+        const func = require(executeFile)
+          return func(...this.params)
+      } catch (err) {
+          return err
+      }
+    }
+
     test() {
 
     }

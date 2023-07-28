@@ -41,14 +41,15 @@ function Compile(call, callback) {
     })
     call.on('end', async () => {
         const compileRes = sandbox.compile()
-        if (compileRes instanceof Error) {
+        const expectedRes = sandbox.compileExpected()
+        if (compileRes instanceof Error || expectedRes instanceof Error) {
             callback(compileRes, {
               message: 'Something with compiling'
             })
         } else {
             callback(null, {
-                actualOutput: compileRes,
-                expectedOutput: 0,
+                actual_output: compileRes,
+                expected_output: expectedRes,
                 message: 'Compile Successfully!'
             });
         }
