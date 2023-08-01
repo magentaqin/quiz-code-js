@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const exec = require('child_process').exec
 
 class Sandbox {
     constructor(key, testSuiteName) {
@@ -14,8 +15,9 @@ class Sandbox {
         this.nameSpace = nameSpace
         fs.mkdirSync(nameSpace)
         // copy test suite
-        const srcPath = path.resolve(process.cwd(), 'test-suites', this.testSuiteName, 'index.test.js')
-        const destPath = path.resolve(nameSpace, 'index.test.js')
+        const srcPath = path.resolve(process.cwd(), 'test-suites', this.testSuiteName, '__tests__', 'index.test.js')
+        fs.mkdirSync(path.resolve(nameSpace, '__tests__'))
+        const destPath = path.resolve(nameSpace, '__tests__', 'index.test.js')
         fs.copyFileSync(srcPath, destPath)
     }
 
@@ -25,7 +27,7 @@ class Sandbox {
 
     writeCompileParams(params) {
         try {
-          this.params  = JSON.parse(params)
+          this.params  = params
         } catch (err) {
           this.params = []
         }
@@ -53,7 +55,15 @@ class Sandbox {
     }
 
     test() {
-
+      return new Promise((resolve, reject) => {
+        exec(`./node_modules/.bin/jest --testPathPattern=${this.nameSpace}`, (error, stdout, stderr) => {
+          if (error) {
+            return reject(error)
+          }
+          // jest output testing result to stderr instead of stdout
+          resolve(stderr)
+        })
+      })
     }
 
     destroy() {

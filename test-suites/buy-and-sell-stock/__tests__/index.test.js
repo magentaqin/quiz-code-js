@@ -1,4 +1,4 @@
-const maxProfit = require('./index');
+const maxProfit = require('../index');
 
 test('Normal transaction', () => {
   expect(maxProfit([7,1,5,3,6,4])).toBe(5);
